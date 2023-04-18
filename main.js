@@ -21,7 +21,10 @@ refreshTodoUi();
 form.onsubmit = (e) => {
   e.preventDefault();
 
-  const formData = new FormData(e.target);
+  const formData = new FormData(form);
+
+  if (!formData.get("todo-text")) return;
+
   const newTodo = generateNewTodo({
     todoText: formData.get("todo-text"),
     todoReminder: formData.get("reminder"),
@@ -30,6 +33,8 @@ form.onsubmit = (e) => {
   todoList = [newTodo, ...todoList];
   localStorage.setItem("todo", JSON.stringify(todoList));
   refreshTodoUi();
+
+  form.reset();
 };
 
 // Buat object berisi todo dll
@@ -48,6 +53,7 @@ function generateTodoElement(todo) {
     <li class="list-group-item" data-todo-id="${todo.id}">
         <div class="d-flex gap-5 user-select-none">
             <p>${todo.text}</p>
+            <span>${new Date(todo.createdAt).toLocaleTimeString()}</span>
             <a role="button" onclick="deleteTodo(${todo.id})">
                 <i class="bi bi-trash3 text-danger"></i>
             </a>
